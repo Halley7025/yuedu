@@ -1,0 +1,36 @@
+[
+  {
+    "bookSourceName": "台湾小说网（简体）",
+    "bookSourceUrl": "https://m.xsw.tw",
+    "bookSourceType": 0,
+    "enabled": true,
+    "enabledExplore": false,
+    "searchUrl": "/modules/article/wap_search.php?searchkey={{key}}",
+    "ruleSearch": {
+      "bookList": "@css:.bookbox",
+      "name": "@css:.bookname a@text<js>java.t2s(String(result))</js>",
+      "bookUrl": "@css:.bookname a@href",
+      "author": "@css:.author@text<js>java.t2s(String(result).replace(/^作者[：:]\\s*/, ''))</js>",
+      "coverUrl": "@css:.bookimg img@src",
+      "intro": "@css:.intro_line@ownText<js>java.t2s(String(result))</js>",
+      "lastChapter": "@css:.update a@text<js>java.t2s(String(result))</js>"
+    },
+    "ruleBookInfo": {
+      "name": "@css:.block_txt2 h2@text<js>java.t2s(String(result))</js>",
+      "author": "@css:.block_txt2 a[href*=/author/]@text<js>java.t2s(String(result))</js>",
+      "coverUrl": "@css:.block_img2 img@src",
+      "intro": "@css:.intro_info@text<js>java.t2s(String(result))</js>",
+      "tocUrl": "@css:.book_more a@href"
+    },
+    "ruleToc": {
+      "chapterList": "@css:ul.chapter li",
+      "chapterName": "@css:a@text<js>java.t2s(String(result))</js>",
+      "chapterUrl": "@css:a@href",
+      "nextTocUrl": "@css:.page a.next@href"
+    },
+    "ruleContent": {
+      "content": "@css:#nr1@html<js>java.t2s(String(result))</js>",
+      "nextContentUrl": "@css:#pb_next:matches(下一[頁页])@href"
+    }
+  }
+]
