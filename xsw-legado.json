@@ -23,15 +23,15 @@
       "tocUrl": "@css:.book_more a@href"
     },
     "ruleToc": {
-      "chapterList": "<js>\nvar rows = java.getElements('@css:ul.chapter li');\nvar isPreview = java.getElements('@css:.book_more').size() > 0;\nvar chapters = [];\nfunction chapterKey(row) {\n    return String(row.select('a[href]').first().attr('href')).split(/[?#]/)[0].split('/').pop();\n}\nif (isPreview) {\n    var seen = JSON.parse(String(java.get('xswLastPageIds') || '{}'));\n    for (var i = rows.size() - 1; i >= 0; i--) {\n        var row = rows.get(i);\n        var key = chapterKey(row);\n        if (!seen[key]) {\n            chapters.push(row);\n            seen[key] = true;\n        }\n    }\n} else {\n    chapters = rows;\n    if (!java.getElements('@css:.page a.next').size()) {\n        var ids = {};\n        for (var i = 0; i < rows.size(); i++) {\n            ids[chapterKey(rows.get(i))] = true;\n        }\n        java.put('xswLastPageIds', JSON.stringify(ids));\n    }\n}\nchapters;\n</js>",
+      "chapterList": "<js>\nvar body = java.getElements('@css:body').get(0);\nvar rows = body.select('ul.chapter li:has(a[href])');\nif (body.select('.page a.next[href]').isEmpty()) {\n    var detailHtml = java.ajax(String(book.bookUrl));\n    if (detailHtml) {\n        var preview = body.clone().empty().html(String(detailHtml)).select('ul.chapter li:has(a[href])');\n        var seen = {};\n        function chapterId(row) {\n            return String(row.select('a[href]').first().attr('href')).split(/[?#]/)[0].split('/').pop();\n        }\n        for (var i = 0; i < rows.size(); i++) {\n            seen[chapterId(rows.get(i))] = true;\n        }\n        for (var j = preview.size() - 1; j >= 0; j--) {\n            var row = preview.get(j);\n            var id = chapterId(row);\n            if (!seen[id]) {\n                rows.add(row);\n                seen[id] = true;\n            }\n        }\n    }\n}\nrows;\n</js>",
       "chapterName": "@css:a@text<js>java.t2s(String(result))</js>",
       "chapterUrl": "@css:a@href<js>\nvar href = String(result).trim();\nvar detail = String(book.bookUrl).split(',')[0].replace(/[?#].*$/, '').replace(/\\/?$/, '/');\nvar origin = detail.match(/^https?:\\/\\/[^/]+/)[0];\nvar url = /^https?:\\/\\//i.test(href) ? href : href.indexOf('//') === 0 ? detail.split(':')[0] + ':' + href : href.charAt(0) === '/' ? origin + href : detail + href;\nurl + ',' + JSON.stringify({headers: {Referer: detail}});\n</js>",
-      "nextTocUrl": "@js:java.getElements('@css:.book_more').size() ? '' : (String(java.getString('@css:.page a.next@href')) || java.getString('@css:.header .back a[href^=/]@href'))"
+      "nextTocUrl": "@css:.page a.next@href"
     },
     "ruleContent": {
       "content": "@css:#nr1@html<js>java.t2s(String(result))</js>",
       "nextContentUrl": "@css:#pb_next:matches(下一[頁页])@href"
     },
-    "lastUpdateTime": 1793875438144
+    "lastUpdateTime": 1793875707959
   }
 ]
